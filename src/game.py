@@ -217,8 +217,8 @@ def main():
     # Release videos
     intro.release()
     chapter1.release()
-    video_path_a.release()
-    video_path_b.release()
+    vc11.release()
+    vc12.release()
     pygame.quit()
 
 if __name__ == "__main__":
