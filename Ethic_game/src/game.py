@@ -1,6 +1,9 @@
 import pygame
 import cv2
+import os 
 
+cwd = os.getcwd() 
+print(cwd)
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -136,47 +139,47 @@ def main():
     # ------------------ ENDING ------------------
     def choose_ending():
         if career >= MAXCAREER or career > ethics:
-            return "../assets/end1.mp4"
+            return "./Ethic_game/assets/evilcore.mp4"
         elif ethics >= MAXETHICS or career < ethics:
-            return "../assets/end2.mp4"
+            return "./Ethic_game/assets/ethical_ending.mp4"
         else:
-            return "../assets/end3.mp4"
+            return "./Ethic_game/assets/end3.mp4"
 
     # ------------------ CHAPTER MENUS ------------------
     def chapter1_menu():
         set_scene(MenuScene([
-            ("Do the project as the manager instructs", lambda: choose_option("../assets/office.mp4", chapter2, 2, 0)),
-            ("Totally refuse to work on this project", lambda: choose_option("../assets/extra1.mp4", chapter2, 0, 2)),
-            ("Express your concerns but do what the manager says", lambda: choose_option("../assets/office_1.mp4", chapter2, 1, 1)),
+            ("Do the project as the manager instructs", lambda: choose_option("./Ethic_game/assets/office.mp4", chapter2, 2, 0)),
+            ("Totally refuse to work on this project", lambda: choose_option("./Ethic_game/assets/extra1.mp4", chapter2, 0, 2)),
+            ("Express your concerns but do what the manager says", lambda: choose_option("./Ethic_game/assets/office_1.mp4", chapter2, 1, 1)),
         ]))
 
     def chapter2_menu():
         set_scene(MenuScene([
-            ("Continue your work it is not your responsibility", lambda: choose_option("../assets/office.mp4", chapter3, 2, 0)),
-            ("Ask for new data but the project needs more time to complete", lambda: choose_option("../assets/extra1.mp4", chapter3, 0, 2)),
-            ("Try to fix bias manually", lambda: choose_option("../assets/office_1.mp4", chapter3, 1, 1)),
+            ("Continue your work it is not your responsibility", lambda: choose_option("./Ethic_game/assets/tv.mp4", chapter3, 2, 0)),
+            ("Ask for new data but the project needs more time to complete", lambda: choose_option("./Ethic_game/assets/extra1.mp4", chapter3, 0, 2)),
+            ("Try to fix bias manually", lambda: choose_option("./Ethic_game/assets/office_1.mp4", chapter3, 1, 1)),
         ]))
 
     def chapter3_menu():
         set_scene(MenuScene([
-            ("Optimize the algorithm for engagement", lambda: choose_option("../assets/office.mp4", chapter4, 2, 0)),
-            ("Leak the information anonymously", lambda: choose_option("../assets/extra1.mp4", chapter4, 0, 2)),
-            ("Try to make it more “neutral”", lambda: choose_option("../assets/office_1.mp4", chapter4, 1, 1)),
+            ("Optimize the algorithm for engagement", lambda: choose_option("./Ethic_game/assets/office.mp4", chapter4, 2, 0)),
+            ("Leak the information anonymously", lambda: choose_option("./Ethic_game/assets/extra1.mp4", chapter4, 0, 2)),
+            ("Try to make it more “neutral”", lambda: choose_option("./Ethic_game/assets/office_1.mp4", chapter4, 1, 1)),
         ]))
 
     def chapter4_menu():
         set_scene(MenuScene([
-            ("No, I’ll save up and buy it. Maybe I can take on extra work.", lambda: choose_option("../assets/office.mp4", end_scene, 2, 0)),
-            ("Pirating is wrong. I’ll wait for a sale or just skip it.", lambda: choose_option("../assets/extra1.mp4", end_scene, 0, 2)),
-            ("I mean… everyone pirates sometimes. I probably won’t get caught.", lambda: choose_option("../assets/office_1.mp4", end_scene, 1, 1)),
+            ("No, I’ll save up and buy it. Maybe I can take on extra work.", lambda: choose_option("./Ethic_game/assets/office.mp4", end_scene, 2, 0)),
+            ("Pirating is wrong. I’ll wait for a sale or just skip it.", lambda: choose_option("./Ethic_game/assets/extra1.mp4", end_scene, 0, 2)),
+            ("I mean… everyone pirates sometimes. I probably won’t get caught.", lambda: choose_option("./Ethic_game/assets/office_1.mp4", end_scene, 1, 1)),
         ]))
 
     # ------------------ VIDEO SCENES ------------------
-    intro = VideoScene("../assets/intro.mp4", chapter1_menu)
-    chapter1 = VideoScene("../assets/chapter1.mp4", chapter1_menu)
-    chapter2 = VideoScene("../assets/2okef.mp4", chapter2_menu)
-    chapter3 = VideoScene("../assets/3oKef.mp4", chapter3_menu)
-    chapter4 = VideoScene("../assets/chapter4.mp4", chapter4_menu)
+    intro = VideoScene("./Ethic_game/assets/intro.mp4",lambda: set_scene(chapter1))
+    chapter1 = VideoScene("./Ethic_game/assets/chapter1.mp4", chapter1_menu)
+    chapter2 = VideoScene("./Ethic_game/assets/2okef.mp4", chapter2_menu)
+    chapter3 = VideoScene("./Ethic_game/assets/3oKef.mp4", chapter3_menu)
+    chapter4 = VideoScene("./Ethic_game/assets/chapter4.mp4", chapter4_menu)
 
     # End scene menu
     def end_scene():
