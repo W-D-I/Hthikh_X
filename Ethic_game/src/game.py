@@ -19,6 +19,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Visual Novel Example")
 
 font = pygame.font.SysFont('Comic Sans MS', 30)
+title_font = pygame.font.SysFont('Comic Sans MS', 72, bold=True)
+
+# Menu BG
+MENU_BG = pygame.image.load("./Ethic_game/assets/bg.jpg").convert()
+MENU_BG = pygame.transform.scale(MENU_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Keep track of all videos for cleanup
 all_videos = []
@@ -50,14 +55,52 @@ class VideoScene(Scene):
         self.video = cv2.VideoCapture(path)
         if not self.video.isOpened():
             print(f"Failed to load video: {path}")
+
         self.next_scene_obj = next_scene
         self.done = False
-        all_videos.append(self.video)  # auto track for cleanup
+
+        # UI
+        self.skip_rect = pygame.Rect(SCREEN_WIDTH - 160, 20, 140, 50)
+
+        # Fast-forward settings
+        self.normal_speed = 1
+        self.fast_speed = 6
+
+        all_videos.append(self.video)
 
     def update(self):
-        if not self.done:
+        if self.done:
+            return
+
+        # Check fast-forward
+        keys = pygame.key.get_pressed()
+        speed = self.fast_speed if keys[pygame.K_f] or keys[pygame.K_RIGHT] else self.normal_speed
+
+        # Play multiple frames per update if fast-forwarding
+        for _ in range(speed):
             playing = play_video(screen, self.video)
             if not playing:
+                self.done = True
+                break
+
+        # Draw skip button
+        pygame.draw.rect(screen, (0, 0, 0), self.skip_rect)
+        pygame.draw.rect(screen, (255, 255, 255), self.skip_rect, 2)
+        text = font.render("Skip ▶▶", True, (255, 255, 255))
+        screen.blit(text, text.get_rect(center=self.skip_rect.center))
+
+        # Fast-forward indicator
+        if speed > 1:
+            ff_text = font.render("⏩ FAST FORWARD", True, (255, 255, 0))
+            screen.blit(ff_text, (20, SCREEN_HEIGHT - 50))
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.skip_rect.collidepoint(event.pos):
+                self.done = True
+
+        if event.type == pygame.KEYDOWN:
+            if event.key in (pygame.K_SPACE, pygame.K_ESCAPE):
                 self.done = True
 
     def finished(self):
@@ -65,9 +108,6 @@ class VideoScene(Scene):
 
     def next(self):
         return self.next_scene_obj
-
-    def release(self):
-        self.video.release()
 
 class MenuScene(Scene):
     def __init__(self, options):
@@ -85,12 +125,22 @@ class MenuScene(Scene):
             self.buttons.append((rect, label))
 
     def update(self):
-        screen.fill((50, 50, 50))
+        
+        # Draw background
+        screen.blit(MENU_BG, (0, 0))
+
+        # Title
+        title_text = title_font.render("Ethic Game", True, (255, 255, 255))
+        title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+
+        screen.blit(title_text, title_rect)
+
         for rect, label in self.buttons:
             pygame.draw.rect(screen, (200, 0, 0), rect)
             text = font.render(label, True, (255, 255, 255))
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
+
         score_text = font.render(f"Career: {career}  Ethics: {ethics}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
 
