@@ -18,12 +18,33 @@ SCREEN_HEIGHT = 720
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Visual Novel Example")
 
-font = pygame.font.SysFont('Comic Sans MS', 30)
-title_font = pygame.font.SysFont('Comic Sans MS', 72, bold=True)
+font = pygame.font.SysFont('DejaVu Sans', 30)
+title_font = pygame.font.SysFont('DejaVu Sans', 72, bold=True)
+button_font = pygame.font.SysFont("DejaVu Sans", 32, bold=True)
 
 # Menu BG
 MENU_BG = pygame.image.load("./Ethic_game/assets/bg.jpg").convert()
 MENU_BG = pygame.transform.scale(MENU_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Text-wrap helper
+def render_multiline_text(text, font, color, max_width):
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = current_line + word + " "
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word + " "
+
+    if current_line:
+        lines.append(current_line)
+
+    rendered_lines = [font.render(line.strip(), True, color) for line in lines]
+    return rendered_lines
 
 # Keep track of all videos for cleanup
 all_videos = []
@@ -113,34 +134,82 @@ class MenuScene(Scene):
     def __init__(self, options):
         self.options = options  # list of (label, callback)
         self.buttons = []
+        self.pressed_index = None
+        self.selected_index = 0  # currently selected button
         self.create_buttons()
 
     def create_buttons(self):
-        start_y = 200
-        width = 400
-        height = 60
+        start_y = 260
+        width = 500
+        height = 70
         gap = 20
+
         for i, (label, _) in enumerate(self.options):
-            rect = pygame.Rect((SCREEN_WIDTH - width)//2, start_y + i * (height + gap), width, height)
+            rect = pygame.Rect(
+                (SCREEN_WIDTH - width) // 2,
+                start_y + i * (height + gap),
+                width,
+                height
+            )
             self.buttons.append((rect, label))
 
     def update(self):
-        
-        # Draw background
+        # Background
         screen.blit(MENU_BG, (0, 0))
 
-        # Title
+        # ----- TITLE -----
         title_text = title_font.render("Ethic Game", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
 
+        shadow = title_font.render("Ethic Game", True, (0, 0, 0))
+        screen.blit(shadow, title_rect.move(4, 4))
         screen.blit(title_text, title_rect)
 
-        for rect, label in self.buttons:
-            pygame.draw.rect(screen, (200, 0, 0), rect)
-            text = font.render(label, True, (255, 255, 255))
-            text_rect = text.get_rect(center=rect.center)
-            screen.blit(text, text_rect)
+        mouse_pos = pygame.mouse.get_pos()
 
+        # ----- BUTTONS -----
+        for i, (rect, label) in enumerate(self.buttons):
+            hovered = rect.collidepoint(mouse_pos) or (i == self.selected_index)
+            if i == self.selected_index:
+                arrow = font.render("▶", True, (255, 255, 0))
+                screen.blit(arrow, (rect.left - 30, rect.centery - arrow.get_height() // 2))
+
+            pressed = self.pressed_index == i
+
+            # Colors
+            base_color = (170, 0, 0)
+            hover_color = (220, 40, 40)
+            color = hover_color if hovered else base_color
+
+            # Press animation
+            y_offset = 4 if pressed else 0
+            draw_rect = rect.move(0, y_offset)
+
+            # Shadow
+            shadow_rect = draw_rect.move(0, 6)
+            pygame.draw.rect(screen, (0, 0, 0), shadow_rect, border_radius=14)
+
+            # Button
+            pygame.draw.rect(screen, color, draw_rect, border_radius=14)
+
+            # Text
+            padding = 20
+            text_surfaces = render_multiline_text(
+                label,
+                button_font,
+                (255, 255, 255),
+                draw_rect.width - padding * 2
+            )
+
+            total_height = sum(t.get_height() for t in text_surfaces)
+            start_y = draw_rect.centery - total_height // 2
+
+            for line in text_surfaces:
+                line_rect = line.get_rect(centerx=draw_rect.centerx, y=start_y)
+                screen.blit(line, line_rect)
+                start_y += line.get_height()
+
+        # Score (optional)
         score_text = font.render(f"Career: {career}  Ethics: {ethics}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
 
@@ -148,7 +217,23 @@ class MenuScene(Scene):
         if event.type == pygame.MOUSEBUTTONDOWN:
             for i, (rect, _) in enumerate(self.buttons):
                 if rect.collidepoint(event.pos):
-                    self.options[i][1]()  # call the callback
+                    self.pressed_index = i
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            for i, (rect, _) in enumerate(self.buttons):
+                if rect.collidepoint(event.pos) and self.pressed_index == i:
+                    self.options[i][1]()
+            self.pressed_index = None
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                self.selected_index = (self.selected_index + 1) % len(self.buttons)
+            elif event.key == pygame.K_UP:
+                self.selected_index = (self.selected_index - 1) % len(self.buttons)
+            elif event.key == pygame.K_RETURN:
+                # Activate the selected button
+                self.options[self.selected_index][1]()
+
 
 # ---------------- MAIN MENU ---------------
 def main_menu(current_scene, start_callback):
