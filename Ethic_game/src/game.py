@@ -414,8 +414,8 @@ def main():
     def chapter2_menu():
         set_scene(MenuScene([
             ("Continue your work it is not your responsibility", lambda: choose_option("./Ethic_game/assets/tv.mp4", chapter3, 2, 0)),
-            ("Ask for new data but the project needs more time to complete", lambda: choose_option("./Ethic_game/assets/extra1.mp4", chapter3, 0, 2)),
-            ("Try to fix bias manually", lambda: choose_option("./Ethic_game/assets/office_1.mp4", chapter3, 1, 1)),
+            ("Ask for new data but the project needs more time to complete", lambda: choose_option("./Ethic_game/assets/medical3.mp4", chapter3, 0, 2)),
+            ("Try to fix bias manually", lambda: choose_option("./Ethic_game/assets/medical2.mp4", chapter3, 1, 1)),
         ]))
 
     def chapter3_menu():
@@ -427,9 +427,9 @@ def main():
 
     def chapter4_menu():
         set_scene(MenuScene([
-            ("No, I’ll save up and buy it. Maybe I can take on extra work.", lambda: choose_option("./Ethic_game/assets/office.mp4", end_scene, 2, 0)),
-            ("Pirating is wrong. I’ll wait for a sale or just skip it.", lambda: choose_option("./Ethic_game/assets/extra1.mp4", end_scene, 0, 2)),
-            ("I mean… everyone pirates sometimes. I probably won’t get caught.", lambda: choose_option("./Ethic_game/assets/office_1.mp4", end_scene, 1, 1)),
+            ("No, I’ll save up and buy it. Maybe I can take on extra work.", lambda: choose_option("./Ethic_game/assets/pirate2.mp4", end_scene, 2, 0)),
+            ("Pirating is wrong. I’ll wait for a sale or just skip it.", lambda: choose_option("./Ethic_game/assets/pirate3.mp4", end_scene, 0, 2)),
+            ("I mean… everyone pirates sometimes. I probably won’t get caught.", lambda: choose_option("./Ethic_game/assets/pirate1.mp4", end_scene, 1, 1)),
         ]))
 
     # ------------------ VIDEO SCENES ------------------
