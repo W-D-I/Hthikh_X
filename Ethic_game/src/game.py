@@ -17,7 +17,7 @@ MAXETHICS = 6
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Visual Novel Example")
+pygame.display.set_caption("The Ethical Path")
 
 font = pygame.font.SysFont('DejaVu Sans', 30)
 title_font = pygame.font.SysFont('DejaVu Sans', 72, bold=True)
@@ -219,10 +219,10 @@ class MenuScene(Scene):
         screen.blit(MENU_BG, (0, 0))
 
         # ----- TITLE -----
-        title_text = title_font.render("Ethic Game", True, (255, 255, 255))
+        title_text = title_font.render("The Ethical Path", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
 
-        shadow = title_font.render("Ethic Game", True, (0, 0, 0))
+        shadow = title_font.render("The Ethical Path", True, (0, 0, 0))
         screen.blit(shadow, title_rect.move(4, 4))
         screen.blit(title_text, title_rect)
 
