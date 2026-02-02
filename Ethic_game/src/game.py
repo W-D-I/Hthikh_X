@@ -399,7 +399,7 @@ def main():
         if career >= MAXCAREER or career > ethics:
             return "./Ethic_game/assets/evilcore.mp4"
         elif ethics >= MAXETHICS or career < ethics:
-            return "./Ethic_game/assets/ethical_ending.mp4"
+            return "./Ethic_game/assets/ethical_end.mp4"
         else:
             return "./Ethic_game/assets/end3.mp4"
 
